@@ -1,24 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import Viewer from "./Viewer";
+import modelPath from "./assets/out.glb";
 
 function App() {
+  const [file, setFile] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFile(modelPath);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {file ? (
+        <Viewer width="800px" height="800px" file={file}></Viewer>
+      ) : (
+        <p>Загрузка...</p>
+      )}
     </div>
   );
 }
