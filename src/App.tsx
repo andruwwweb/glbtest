@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
-import Viewer from "./Viewer";
+import Viewer from "./components/Viewer/Viewer";
 import modelPath from "./assets/out.glb";
 
 function App() {
-  const [file, setFile] = useState<string | null>(null);
+  const [model, setModel] = useState<string | null>(null);
 
   useEffect(() => {
-    setFile(modelPath);
+    setModel(modelPath);
   }, []);
 
   return (
     <div>
-      {file ? (
-        <Viewer width="800px" height="800px" file={file}></Viewer>
+      {model ? (
+        <Viewer width="100%" height="calc(100vh - 50px)" model={model}></Viewer>
       ) : (
-        <p>Загрузка...</p>
+        <p>Loading...</p>
       )}
     </div>
   );

@@ -1,0 +1,47 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  .modal {
+    border-radius: 20px;
+    width: 600px;
+    background-color: #fff;
+    overflow: hidden;
+    .preview {
+      width: 100%;
+      & > div {
+        width: 100% !important;
+      }
+    }
+    .buttons {
+      display: flex;
+      justify-content: flex-end;
+      align-items: start;
+      gap: 12px;
+      padding: 16px;
+      button {
+        cursor: pointer;
+        border-radius: 20px;
+        border: 2px solid #44bbd4;
+        background-color: #fff;
+        outline: none;
+        display: block;
+        padding: 6px 18px;
+        text-align: center;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+          transition: all 0.3s ease-in-out;
+          background-color: #44bbd4;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
