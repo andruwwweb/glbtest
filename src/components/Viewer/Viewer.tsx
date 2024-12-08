@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import { Canvas, ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import style from "./Viewer.module.scss";
 import Modal from "../Modal/Modal";
+import Model from "./Model";
 
-type ViewerProps = {
+type viewerProps = {
   width: string;
   height: string;
   model: string;
 };
 
-const Viewer = ({ width, height, model }: ViewerProps) => {
+const Viewer = ({ width, height, model }: viewerProps) => {
   const [cart, setCart] = useState<string[]>([]);
   const [selected, setSelected] = useState<THREE.Mesh | null>(null);
 
   const onProductClick = (event: ThreeEvent<MouseEvent>, mesh: THREE.Mesh) => {
+    console.log(mesh);
     event.stopPropagation();
     const idPattern = /^q\d+a\d+_\d+_instance_\d+$/;
     if (idPattern.test(mesh.name)) {
@@ -23,67 +25,28 @@ const Viewer = ({ width, height, model }: ViewerProps) => {
     }
   };
 
-  const Model = ({
-    onProductClick,
-    cart,
-  }: {
-    onProductClick: (event: ThreeEvent<MouseEvent>, mesh: THREE.Mesh) => void;
-    cart: string[];
-  }) => {
-    const { scene } = useGLTF(model);
-    const items = scene.children.filter(
-      (child): child is THREE.Mesh => child instanceof THREE.Mesh
-    );
-
-    return (
-      <group>
-        {items.map((item, index) => {
-          if (cart.includes(item.name)) return null;
-
-          return (
-            <mesh
-              key={index}
-              geometry={item.geometry}
-              material={item.material}
-              position={item.position}
-              onClick={(event) => onProductClick(event, item)}
-            />
-          );
-        })}
-      </group>
-    );
-  };
-
   return (
     <div className={style.wrapper}>
       <div className={style.container} style={{ width, height }}>
         <Canvas
           shadows
-          camera={{ position: [0, 0, 750], fov: 60 }}
-          gl={{ alpha: true }}
+          camera={{ position: [140, 100, 750], fov: 60, near: 0.1, far: 1200 }}
+          gl={{
+            alpha: true,
+            precision: "highp",
+            logarithmicDepthBuffer: true,
+          }}
         >
+          <pointLight position={[0, 80, 50]} intensity={10} castShadow />
           <directionalLight
-            position={[0, 300, 700]}
-            intensity={6}
+            position={[0, 35, 70]}
+            intensity={3.5}
             castShadow
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
-            shadow-bias={-0.0001}
+            shadow-bias={-0.00005}
           />
-          <ambientLight intensity={0.4} />
-          <pointLight position={[0, 300, 0]} intensity={0.3} castShadow />
-          <spotLight
-            position={[200, 300, 200]}
-            intensity={0.5}
-            angle={Math.PI / 8}
-            penumbra={1}
-            castShadow
-          />
-          <mesh receiveShadow rotation={[0, 0, 0]} position={[0, -50, 0]}>
-            <planeGeometry args={[100, 100]} />
-            <shadowMaterial opacity={4} />
-          </mesh>
-          <Model onProductClick={onProductClick} cart={cart} />
+          <Model onProductClick={onProductClick} cart={cart} model={model} />
           <OrbitControls
             minDistance={200}
             maxDistance={700}
@@ -97,7 +60,6 @@ const Viewer = ({ width, height, model }: ViewerProps) => {
       </div>
       {selected && (
         <Modal
-          model={model}
           selected={{
             id: selected.name,
             modelPath: model,

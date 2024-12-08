@@ -5,7 +5,7 @@ import style from "./Modal.module.scss";
 import * as THREE from "three";
 
 type ModalProps = {
-  model: string;
+  model?: string;
   selected: { id: string; modelPath: string; mesh: THREE.Mesh };
   onShelf: () => void;
   onCart: (product: string) => void;
@@ -23,9 +23,8 @@ const Modal = ({ selected, onShelf, onCart }: ModalProps) => {
             style={{ height: "300px", width: "300px" }}
             shadows
           >
-            <ambientLight intensity={0.1} />
             <directionalLight
-              position={[0, 10, 30]}
+              position={[0, 0, 50]}
               intensity={7}
               castShadow
               shadow-mapSize-width={1024}
@@ -33,11 +32,6 @@ const Modal = ({ selected, onShelf, onCart }: ModalProps) => {
               shadow-camera-near={0.1}
               shadow-camera-far={100}
             />
-            <mesh position={[0, -10, 0]} rotation={[0, 0, 0]} receiveShadow>
-              <planeGeometry args={[300, 300]} />
-              <shadowMaterial opacity={0.3} />
-            </mesh>
-
             <mesh
               geometry={mesh.geometry}
               material={
@@ -45,7 +39,6 @@ const Modal = ({ selected, onShelf, onCart }: ModalProps) => {
                   ? mesh.material.map((mat) => mat.clone())
                   : mesh.material.clone()
               }
-              castShadow
               scale={[1, 1, 1]}
             />
             <OrbitControls minDistance={50} maxDistance={300} />
